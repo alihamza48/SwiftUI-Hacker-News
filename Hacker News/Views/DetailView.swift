@@ -10,10 +10,35 @@ import SwiftUI
 
 struct DetailView: View {
     
-    let url: String
+    let url: String?
+    @State var isLoading = false
     
     var body: some View {
-       WebView(urlString: url)
+        WebView(urlString: url)
+            .onAppear(perform: {
+            startNetworkCall()
+        })
+        
+        if isLoading{
+            ZStack{
+                Color(.systemBackground)
+                    .ignoresSafeArea()
+                    .opacity(0.8)
+                
+                ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .black))
+                    .scaleEffect(3)
+            }
+            .frame(width: /*@START_MENU_TOKEN@*/100.0/*@END_MENU_TOKEN@*/, height: 900)
+            .opacity(0.8)
+        }
+    }
+    
+    
+    func startNetworkCall(){
+        isLoading = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5){
+            isLoading = false
+        }
     }
 }
 
