@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     
     @ObservedObject var networkManager = NetworkManager()
-    
+    @State var isLoading = false
     
     var body: some View {
         NavigationView {
@@ -21,23 +21,42 @@ struct ContentView: View {
                         Text(post.title)
                     }
                 }
-               
+                
             }
             .navigationTitle("Hacker News")
         }
         .onAppear(perform: {
-            self.networkManager.fetchData()
+            startNetworkCall()
         })
+        
+        if isLoading{
+            ZStack{
+                Color(.systemBackground)
+                    .ignoresSafeArea()
+                    .opacity(0.8)
+                
+                ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .black))
+                    .scaleEffect(3)
+            }
+            .frame(width: /*@START_MENU_TOKEN@*/100.0/*@END_MENU_TOKEN@*/, height: 900)
+            .opacity(0.8)
+        }
     }
+    
+        func startNetworkCall(){
+            isLoading = true
+            self.networkManager.fetchData()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                isLoading = false
+            }
+           
+        }
 }
 
-
-//let posts = [
-//Post(id: "1", title: "Hello"),
-//Post(id: "2", title: "Helllllll"),
-//Post(id: "3", title: "ppppp")
-//]
 
 #Preview {
     ContentView()
 }
+
+
+
